@@ -1,0 +1,28 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# eodataflow
+
+<!-- badges: start -->
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/eodataflow)](https://cran.r-project.org/package=eodataflow)
+[![Github_Status_Badge](https://img.shields.io/badge/Github-0.0.9007-blue.svg)](https://github.com/ptaconet/eodataflow)
+<!-- badges: end -->
+
+[package in development...]
+
+R workflow to automate the import of various kind of spatiotemporal earth observation data and eventually extract statistics around sampling points
+
+functions to :
+- import eo data given a roi and a one or more time frames
+- extract statistics on buffers around sampling points for these time frames

@@ -10,3 +10,5 @@ Description: R workflow to automate the import of various kind of spatiotemporal
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
+URL: https://github.com/ptaconet/eodataflow
+BugReports: https://github.com/ptaconet/eodataflow/issues
