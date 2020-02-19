@@ -1,12 +1,12 @@
 Package: eodataflow
-Title: What the Package Does (One Line, Title Case)
+Title: R workflow to import spatiotemporal earth observation data and get statistics around sampling points
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Paul",
            family = "Taconet",
            role = c("aut", "cre"),
            email = "paul.taconet@ird.fr")
-Description: What the package does (one paragraph).
+Description: R workflow to automate the import of various kind of spatiotemporal earth observation data and eventually extract statistics around sampling points
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

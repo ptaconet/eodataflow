@@ -8,16 +8,12 @@ require(dplyr)
 ## and video here : http://www.user2019.fr/static/pres/t257651.zip
 
 ## create the package
-usethis::create_package("/home/ptaconet/opendapr")
+usethis::create_package("/home/ptaconet/eodataflow")
 ## Manual step : Create a dev_history.R file that archives all the package history steps. Then copy it to the package folder.
 ## Then proceed :
 usethis::use_build_ignore("dev_history.R")
-usethis::use_build_ignore(".data_collections.csv")
-usethis::use_build_ignore(".notes_articles.txt")
 usethis::use_git()
 usethis::use_git_ignore("dev_history.R")
-usethis::use_git_ignore(".data_collections.csv")
-usethis::use_git_ignore(".notes_articles.txt")
 usethis::use_gpl3_license()
 devtools::check()
 usethis::proj_get()
