@@ -61,19 +61,6 @@ devtools::install(build_vignettes = TRUE)
 devtools::test() #reloads your code with load_all(), then runs all testthat tests.
 ## Ajouter manuellement dans le description file, la liste des packages dont dépend le package
 
-## ci dessous, pour ajouter des données internes au package (ie non visibles par les utilisateurs)
-opendapMetadata_internal <- read.csv("/home/ptaconet/opendapr/.data_collections.csv",stringsAsFactors =F ) %>% arrange(collection)
-modis_tiles<-sf::read_sf("/home/ptaconet/Téléchargements/modis_sin.kmz")  %>% #https://modis.ornl.gov/files/modis_sin.kmz
-  sf::st_zm(modis_tiles) %>%
-  dplyr::select(Name,geometry)
-usethis::use_data(opendapMetadata_internal,modis_tiles, internal = TRUE,overwrite = TRUE)
-
-
-
-#roi_example<-"/home/ptaconet/getRemoteData/inst/extdata/roi_example.gpkg"
-#dir.create("inst/extdata")
-#file.copy(roi_example,gsub("getRemoteData","opendapr",roi_example))
-
 roi_modis2tiles<-"/home/ptaconet/Documents/modis2tiles.gpkg"
 file.copy(roi_modis2tiles,gsub("Documents","opendapr/inst/extdata",roi_modis2tiles))
 
@@ -85,6 +72,7 @@ usethis::use_git_ignore("config.yml")
 ## To build vignettes
 devtools::build_vignettes() # ne pas oublier d'avoir ajouté au préalable VignetteBuilder: knitr dans le DESCRIPTION file
 devtools::install(build_vignettes = TRUE)
+devtools::install()
 
 # to test build on windows
 #check_win()

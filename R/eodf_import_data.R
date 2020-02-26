@@ -7,9 +7,9 @@
 #' @param collection character string the name of a collection
 #' @param variable character string the name of a variables
 #' @param roi sf the ROI. Mandatory for SMAP collection, else, not necessary
-#' @param output character string the output. "RasterBrick" or "stars". At not stars is implemented only for MODIS and VIIRS collections
+#' @param output character string the output. "RasterBrick" or "velox" or "stars". At now stars is implemented only for MODIS and VIIRS collections
 #'
-#' @import raster stars ncdf4 purrr magrittr
+#' @import raster stars ncdf4 purrr magrittr velox
 #'
 #' @export
 
@@ -103,7 +103,7 @@ eodf_import_data <- function(df_data_to_import,
     names(rasts) <- df_data_to_import$time_start
 
 }
-  } else {  # data imported with getremotedata
+  } else {  # data imported with getremotedata or shub4r
 
 
    if (collection=="SRTM"){
@@ -131,6 +131,9 @@ eodf_import_data <- function(df_data_to_import,
   } else if (collection=="MIRIADE"){
     rasts <- df_data_to_import$destfile %>%
       map(~read.csv(.,skip=10))
+  } else if(collection %in% c("S2L2A","S1-AWS-IW-VVVH")){
+#TODO
+
   }
 
   }

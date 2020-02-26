@@ -12,3 +12,5 @@ Encoding: UTF-8
 LazyData: true
 URL: https://github.com/ptaconet/eodataflow
 BugReports: https://github.com/ptaconet/eodataflow/issues
+Depends: R (>= 2.10)
+RoxygenNote: 6.1.1
