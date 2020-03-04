@@ -22,7 +22,7 @@
 #'
 #' @export
 
-prepare_df_points <- function(df_points_metadata,lag_time){
+prepare_df_points <- function(df_points_metadata){
 
   sampling_points<-df_points_metadata %>%
     mutate(date=as.Date(date)) %>%
@@ -31,8 +31,7 @@ prepare_df_points <- function(df_points_metadata,lag_time){
     tidyr::nest(coords=c(latitude,longitude,id)) %>%
     mutate(sf_points=map(coords,~sf::st_as_sf(.,coords = c("longitude", "latitude"), crs = 4326))) %>%
     dplyr::select(-coords) %>%
-    mutate(date_numeric=as.integer(date))  %>%
-    mutate(lag_time=lag_time)
+    mutate(date_numeric=as.integer(date))
 
   return(sampling_points)
 

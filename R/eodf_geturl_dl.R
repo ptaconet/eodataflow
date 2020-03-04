@@ -3,11 +3,13 @@
 #' @title Get URL and download
 #' @description
 #'
-#' @param sampling_points
+#' @param dates
+#' @param lag_time
 #' @param roi
 #' @param roi_name
 #' @param collection
 #' @param variables
+#' @param parallel
 #' @param verbose
 #'
 #' @importFrom purrr map2
@@ -17,11 +19,13 @@
 #' @export
 
 
-eodf_geturl_dl <- function(sampling_points,
+eodf_geturl_dl <- function(dates,
+                           lag_time,
                            roi,
                            roi_name,
                            collection,
                            variables,
+                           parallel=TRUE,
                            verbose=FALSE){
 
   if(verbose){cat("Retrieving URLs for collection ",collection,"\n")}
@@ -32,7 +36,7 @@ eodf_geturl_dl <- function(sampling_points,
   if(coll_info$package=="opendapr"){
 
    odap_opt_param <- opendapr::odr_get_opt_param(collection,roi,verbose = F)
-  list_of_urls <- map2(.x = sampling_points$date , .y = sampling_points$lag_time,
+  list_of_urls <- map2(.x = dates , .y = lag_time,
             ~opendapr::odr_get_url(
               collection = collection,
               variables = variables,
@@ -44,7 +48,7 @@ eodf_geturl_dl <- function(sampling_points,
 
   } else if (coll_info$package=="getremotedata"){
 
-    list_of_urls <- map2(.x = sampling_points$date , .y = sampling_points$lag_time,
+    list_of_urls <- map2(.x = dates , .y = lag_time,
                          ~getremotedata::grd_get_url(
                            collection = collection,
                            variables = variables,
@@ -55,7 +59,7 @@ eodf_geturl_dl <- function(sampling_points,
 
     } else if (coll_info$package=="shub4r"){
 
-      list_of_urls <- map2(.x = sampling_points$date , .y = sampling_points$lag_time,
+      list_of_urls <- map2(.x = dates , .y = lag_time,
                            ~shub4r::shr_get_url(
                              collection = collection,
                              variables = variables,
@@ -78,7 +82,7 @@ eodf_geturl_dl <- function(sampling_points,
     dl_res <- getremotedata::grd_download_data_era5(df_to_dl)
   } else {
     if(is.na(coll_info$login)){source=NULL} else {source="earthdata"}
-    dl_res <- opendapr::odr_download_data(df_to_dl, parallel = TRUE, source = source, verbose = verbose)
+    dl_res <- opendapr::odr_download_data(df_to_dl, parallel = parallel, source = source, verbose = verbose)
   }
 
   return(list(list_of_urls=list_of_urls,dl_res=dl_res))
