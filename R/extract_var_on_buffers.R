@@ -3,7 +3,7 @@
 #' @title Extract variables given a vector of buffer sizes
 #' @description
 #'
-#' @param rastBrick list of raster bricks (1 to n)
+#' @param rastBrick list of rasterBricks or velox objects (1 to n)
 #' @param sf_points list of sampling sf_points (1 to n)
 #' @param buffer_sizes vector of buffers (1 to z)
 #' @param fun_summarize summarizing function
@@ -11,7 +11,7 @@
 #' @param date_sampling list of sampling dates (1 to n)
 #' @param na_max_perc integer. if, in a given buffer, there are more than na_max_perc cells that are NA, the overall value for this buffer will be NA. default is 0 (i.e. as long as there is one cell with a value, the overall value for the buffer will be computed)
 #' @param code_indice character vector. code indice (only for timeseries)
-#' @param verbose
+#' @param verbose verbose
 #'
 #' @details
 #'
@@ -24,7 +24,7 @@
 #' @import velox sf dplyr
 #' @importFrom tidyr pivot_longer
 #' @importFrom purrr map_dfr pmap_dfr
-#'
+#' @importFrom magrittr set_names %>%
 #' @export
 
 
@@ -33,24 +33,24 @@ extract_var_on_buffers <- function(rastBrick,
                            buffer_sizes,
                            fun_summarize = "mean",
                            is_timeseries = FALSE,
-                           date_sampling = NULL,
-                           na_max_perc = 0,
+                           date_sampling = NA,
+                           na_max_perc = 100,
                            code_indice = NULL,
                            verbose = FALSE){
 
-  extract_var_on_buffer <- function(rastBrick,sf_points,buffer_size,fun_summarize,is_timeseries,date_sampling,code_indice){
+  extract_var_on_buffer <- function(rastBrick,sf_points,buffer_size,fun_summarize,is_timeseries,date_sampling,na_max_perc,code_indice,verbose){
 
     utm_epsg <- .getUTMepsg(sf_points)
     if(verbose){cat("UTM zone is ",utm_epsg,"\n")}
     buffers <- st_buffer(st_transform(sf_points,utm_epsg),buffer_size) %>% st_transform(st_crs(rastBrick))
     rastVx <- velox(rastBrick)
 
-    if(na_max_perc>0){ # get percentages of NA cells in each buffer
+    if(na_max_perc<100){ # get percentages of NA cells in each buffer
 
       fun_perc_na <- function(x) {
         if(sum(!is.na(x))==0){ 100 } # buffers with only NA pixels will be set to inf (as sum(!is.na(x))==0). We replace them by 100
          else {
-             sum(is.na(x))/sum(!is.na(x))*100
+             sum(is.na(x))/(sum(is.na(x))+sum(!is.na(x)))*100
           }
         }
 
@@ -77,7 +77,8 @@ extract_var_on_buffers <- function(rastBrick,
       ex.mat2 <- ex.mat2 %>%
         mutate(id = sf_points$id) %>%
         tidyr::pivot_longer(-id,names_to = "lag_n", values_to = "val") %>%
-        dplyr::select(lag_n)
+        dplyr::select(lag_n) %>%
+        mutate(lag_n = as.numeric(lag_n))
 
       ex.mat <- ex.mat %>%
         mutate(id = sf_points$id) %>%
@@ -93,7 +94,7 @@ extract_var_on_buffers <- function(rastBrick,
         mutate(var = code_indice) %>%
         dplyr::select(id,buffer,date,lag_time,lag_n,val,var)
 
-      if(na_max_perc>0){ # set to NAs buffers with to many NA values (treshold is na_max_perc)
+      if(na_max_perc<100){ # set to NAs buffers with to many NA values (treshold is na_max_perc)
 
         ex.mat.vals.nas <- ex.mat.vals.nas %>%
           tidyr::pivot_longer(-id,names_to = "date", values_to = "na_perc") %>%
@@ -115,7 +116,7 @@ extract_var_on_buffers <- function(rastBrick,
           mutate(buffer = buffer_size) %>%
           dplyr::select(id,buffer,val,code_indice)
 
-        if(na_max_perc>0){ # set to NAs buffers with to many NA values (treshold is na_max_perc)
+        if(na_max_perc<100){ # set to NAs buffers with to many NA values (treshold is na_max_perc)
 
           ex.mat.vals.nas <- ex.mat.vals.nas %>%
             tidyr::pivot_longer(-id,names_to = "code_indice", values_to = "na_perc")
@@ -132,9 +133,14 @@ extract_var_on_buffers <- function(rastBrick,
 
     }
 
+  if(!is.list(rastBrick)){
+    rastBrick <- list(rastBrick)
+    sf_points <- list(sf_points)
+  }
+
   df_var <- buffer_sizes %>%
-    map_dfr(.,~pmap_dfr(list(rastBrick, sf_points, ., date_sampling),
-                        ~extract_var_on_buffer(..1,..2,..3,fun_summarize,is_timeseries,..4,code_indice)))
+    map_dfr(.,~pmap_dfr(list(rastBrick, sf_points, ., date_sampling,na_max_perc),
+                        ~extract_var_on_buffer(..1,..2,..3,fun_summarize,is_timeseries,..4,..5,code_indice,verbose)))
 
   return(df_var)
 }

@@ -5,12 +5,11 @@
 \title{Extract variables given a vector of buffer sizes}
 \usage{
 extract_var_on_buffers(rastBrick, sf_points, buffer_sizes,
-  fun_summarize = "mean", is_timeseries = FALSE,
-  date_sampling = NULL, na_max_perc = 0, code_indice = NULL,
-  verbose = FALSE)
+  fun_summarize = "mean", is_timeseries = FALSE, date_sampling = NA,
+  na_max_perc = 0, code_indice = NULL, verbose = FALSE)
 }
 \arguments{
-\item{rastBrick}{list of raster bricks (1 to n)}
+\item{rastBrick}{list of rasterBricks or velox objects (1 to n)}
 
 \item{sf_points}{list of sampling sf_points (1 to n)}
 
@@ -24,7 +23,7 @@ extract_var_on_buffers(rastBrick, sf_points, buffer_sizes,
 
 \item{code_indice}{character vector. code indice (only for timeseries)}
 
-\item{verbose}{}
+\item{verbose}{verbose}
 }
 \description{
 

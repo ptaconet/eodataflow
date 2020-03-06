@@ -34,6 +34,8 @@ s2_create_rast_indices_one_date <- function(destfiles,variables,spectral_indices
     map(.,~brick(.)) %>%
     raster::merge(x=.[[1]],y=.[[2]],tolerance=0.15)
 
+  NAvalue(brick_bad_q_pixels) <- -1 # by default R set value 65535 to NA when reading the raster. We set it to -1 because we need to use the 65535 value (above)
+
   cloud_high_proba <- c(65535,65535,65535) # combinaison de pixels dans les bandes 1, 2 et 3 pour les pixels de mauvaise qualité
   cloud_medium_proba <- c(49344,49344,49344)
   thin_cirrus <- c(25700,51400,65535)
@@ -41,13 +43,11 @@ s2_create_rast_indices_one_date <- function(destfiles,variables,spectral_indices
   cloud_shadow <- c(25700,12850,0)
   unclassifed <- c(32896,32896,32896)
 
-  bad_q_pix_list <- list(cloud_high_proba,cloud_medium_proba,thin_cirrus,dark_feature_shadow,cloud_shadow,unclassifed)
-
-  rast_bad_q_pixels <- brick_bad_q_pixels[[1]] #initialisation du raster
   # on set à NA les pixels de mauvaise qualité (cloud high proba, cloud medium proba, etc.)
-  for(i in 1:length(bad_q_pix_list)){
-      rast_bad_q_pixels[brick_bad_q_pixels[[1]] == bad_q_pix_list[[i]][1] & brick_bad_q_pixels[[2]] == bad_q_pix_list[[i]][2] & brick_bad_q_pixels[[3]] == bad_q_pix_list[[i]][3]] <- NA
-    }
+  # workaround... quite ugly but working
+  rast_bad_q_pixels <- sum(brick_bad_q_pixels)
+  bad_q_pix_val <- c(sum(cloud_high_proba),sum(cloud_medium_proba),sum(thin_cirrus),sum(dark_feature_shadow),sum(cloud_shadow),sum(unclassifed))
+  rast_bad_q_pixels[rast_bad_q_pixels %in% bad_q_pix_val] <- NA
 
   # calculate indices and remove bad pixels
   list_indices <- list()
@@ -90,6 +90,7 @@ s2_create_rast_indices_one_date <- function(destfiles,variables,spectral_indices
 #' @param th_list_of_url data.frame, output of shub4r::shr_get_url()
 #' @param variables character vector. vector of bands (e.g. c("BO4","B08"))
 #' @param spectral_indices character vector. vector of spectral indices to compute (e.g. c("ndvi","mndvi"))
+#' @param verbose verbose
 #'
 #' @return
 #' a rasterBrick with the spectral indices (1 band / indice).
@@ -97,6 +98,7 @@ s2_create_rast_indices_one_date <- function(destfiles,variables,spectral_indices
 #' @details
 #' param th_list_of_url is the output of shub4r::shr_get_url. It must contain the band "9_SCENE_CLASSIFICATION"
 #'
+#' @import furrr
 #' @export
 
 prepare_s2_indices <- function(th_list_of_url,variables,spectral_indices){
@@ -124,4 +126,5 @@ prepare_s2_indices <- function(th_list_of_url,variables,spectral_indices){
     magrittr::set_names(spectral_indices)
 
   return(indices_rasterstack_period)
+
 }
