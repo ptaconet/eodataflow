@@ -112,17 +112,17 @@ extract_var_on_buffers <- function(rastBrick,
 
         ex.mat <- ex.mat %>%
           mutate(id = sf_points$id) %>%
-          tidyr::pivot_longer(-id,names_to = "code_indice", values_to = "val") %>%
+          tidyr::pivot_longer(-id,names_to = "var", values_to = "val") %>%
           mutate(buffer = buffer_size) %>%
-          dplyr::select(id,buffer,val,code_indice)
+          dplyr::select(id,buffer,val,var)
 
         if(na_max_perc<100){ # set to NAs buffers with to many NA values (treshold is na_max_perc)
 
           ex.mat.vals.nas <- ex.mat.vals.nas %>%
-            tidyr::pivot_longer(-id,names_to = "code_indice", values_to = "na_perc")
+            tidyr::pivot_longer(-id,names_to = "var", values_to = "na_perc")
 
           ex.mat <- ex.mat %>%
-            left_join(ex.mat.vals.nas,by=c("id","code_indice")) %>%
+            left_join(ex.mat.vals.nas,by=c("id","var")) %>%
             mutate(val=ifelse(na_perc <= na_max_perc,val,NA)) #%>%
             #select(-na_perc)
         }

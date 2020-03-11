@@ -84,3 +84,6 @@ devtools::document()
 pkgdown::build_site()
 usethis::use_build_ignore("docs")
 ## Manual step : go to the settings of the package on the github page, then under "github page" put "master branch /docs folder"
+
+
+usethis::use_build_ignore(c("korhogo"))

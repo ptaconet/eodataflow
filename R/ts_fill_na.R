@@ -110,8 +110,8 @@ ts_fillna_l1tol3 <- function(df_var){
 
   df<-left_join(df,df8day_as_1day,by=c("id","buffer","lag_n")) %>%
     mutate(val.x=if_else(!is.na(val.x),val.x,val.y)) %>%
-    dplyr::select(-c(val.y,var.y,qval.y,date.y)) %>%
-    rename(val=val.x,var=var.x,qval=qval.x,date=date.x) %>%
+    dplyr::select(-c(val.y,var.y,qval.y,date.y,lag_time.y)) %>%
+    rename(val=val.x,var=var.x,qval=qval.x,date=date.x,lag_time=lag_time.x) %>%
     mutate(qval=if_else((qval==0 & !is.na(val)),qvalue,qval))
   return(df)
 }

@@ -20,12 +20,12 @@
 #' @export
 
 
-eodf_geturl_dl <- function(times_start,
-                           times_end,
+eodf_geturl_dl <- function(times_start = NULL,
+                           times_end = NULL,
                            roi,
                            roi_name,
                            collection,
-                           variables,
+                           variables = NULL,
                            parallel=TRUE,
                            min_filesize=5000,
                            verbose=FALSE){
@@ -75,7 +75,7 @@ eodf_geturl_dl <- function(times_start,
     }
 
   for(i in 1:length(list_of_urls)){
-    list_of_urls[[i]]$destfile<- file.path(roi_name,list_of_urls[[i]]$destfile)
+    list_of_urls[[i]]$destfile<- file.path("data",roi_name,list_of_urls[[i]]$destfile)
   }
 
   df_to_dl <- list_of_urls %>%

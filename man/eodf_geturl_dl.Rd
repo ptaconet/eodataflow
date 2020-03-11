@@ -4,8 +4,9 @@
 \alias{eodf_geturl_dl}
 \title{Get URL and download}
 \usage{
-eodf_geturl_dl(times_start, times_end, roi, roi_name, collection,
-  variables, parallel = TRUE, min_filesize = 5000, verbose = FALSE)
+eodf_geturl_dl(times_start = NULL, times_end = NULL, roi, roi_name,
+  collection, variables = NULL, parallel = TRUE, min_filesize = 5000,
+  verbose = FALSE)
 }
 \arguments{
 \item{verbose}{}

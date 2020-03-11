@@ -17,11 +17,11 @@ prepare_mixed_products <- function(rasts_terra,rasts_aqua,fun_summarize){
 
    if(fun_summarize=="max"){
    fun_to_summarize <- Vectorize(function(x, y){
-     if(is.na(x) && is.na(y)) { NA } else { max(x, y, na.rm=TRUE)}
+     if(is.na(x) && is.na(y)) { NA } else if (is.na(x) && !is.na(y)) { y } else if (!is.na(x) && is.na(y)) { x } else { max(x, y, na.rm=TRUE)}
    })
    } else if (fun_summarize=="min"){
      fun_to_summarize <- Vectorize(function(x, y){
-       if(is.na(x) && is.na(y)) { NA } else { min(x, y, na.rm=TRUE)}
+       if(is.na(x) && is.na(y)) { NA } else if (is.na(x) && !is.na(y)) { y } else if (!is.na(x) && is.na(y)) { x } else { min(x, y, na.rm=TRUE)}
      })
    } else if (fun_summarize=="mean"){ # the "mean" function does not work...
      fun_to_summarize <- Vectorize(function(x, y){

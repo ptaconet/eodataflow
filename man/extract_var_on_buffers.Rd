@@ -6,7 +6,7 @@
 \usage{
 extract_var_on_buffers(rastBrick, sf_points, buffer_sizes,
   fun_summarize = "mean", is_timeseries = FALSE, date_sampling = NA,
-  na_max_perc = 0, code_indice = NULL, verbose = FALSE)
+  na_max_perc = 100, code_indice = NULL, verbose = FALSE)
 }
 \arguments{
 \item{rastBrick}{list of rasterBricks or velox objects (1 to n)}

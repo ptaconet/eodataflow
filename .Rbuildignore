@@ -3,4 +3,7 @@
 ^dev_history\.R$
 ^LICENSE\.md$
 ^README\.Rmd$
-.start_script.R
+start_script.R
+wf_input_collections.csv
+^korhogo$
+^diebougou$
