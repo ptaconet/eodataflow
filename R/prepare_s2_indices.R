@@ -120,8 +120,14 @@ prepare_s2_indices <- function(th_list_of_url,variables,spectral_indices){
  #  pour 1 élément de list_of_url : indices spectraux sous forme de rasterBrick, moyennés sur toute la période
   indices_rasterstack_period <- spectral_indices %>%
     map(.,~keep(rasts_indices,names(rasts_indices)==.)) %>%
-    map(.,~raster::stack(.)) %>%
-    map(.,~calc(., fun = mean, na.rm = T)) %>%
+    map(.,~raster::stack(.))
+
+  if(nlayers(indices_rasterstack_period[[1]]) > 1){
+  indices_rasterstack_period <- indices_rasterstack_period %>%
+    map(.,~calc(., fun = mean, na.rm = T))
+  }
+
+  indices_rasterstack_period <- indices_rasterstack_period %>%
     raster::brick(.) %>%
     magrittr::set_names(spectral_indices)
 
