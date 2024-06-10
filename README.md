@@ -11,10 +11,6 @@
 
 \[package in development…\]
 
-R workflow to automate the import of various kind of spatiotemporal
-earth observation data and eventually extract statistics around sampling
-points
+**These functions were developed for a specific use-case (as part of my PhD thesis) and do not aim (for now) at being widely used.**
 
-functions to : - import eo data given a roi and a one or more time
-frames - extract statistics on buffers around sampling points for these
-time frames
+R workflow to automate the import of various kind of spatiotemporal earth observation data and eventually extract statistics around sampling points.
